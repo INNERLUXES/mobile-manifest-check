@@ -1,0 +1,51 @@
+{
+  "name": "mobile-manifest-check",
+  "version": "1.0.0",
+  "description": "Mobile manifest check: before a release, reads an Android AndroidManifest.xml with its network security config and FileProvider paths, and an iOS Info.plist, and reports dangerous and restricted permissions, android:debuggable, allowBackup, cleartext traffic, user certificates, exported components without a permission, missing android:exported, broad provider paths, missing, empty or placeholder usage descriptions and App Transport Security exceptions, each mapped to its OWASP MASVS control. Text, JSON and GitHub annotation output, exit codes for a pipeline, a safe XML reader that expands no entity, no dependencies.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "mobile-manifest-check": "bin/mobile-manifest-check.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "docs",
+    "examples",
+    "research",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage \"test/*.test.js\"",
+    "check": "node tools/check.mjs",
+    "example": "node tools/example.mjs"
+  },
+  "keywords": [
+    "android",
+    "ios",
+    "mobile-security",
+    "owasp-masvs",
+    "android-manifest",
+    "info-plist",
+    "app-transport-security",
+    "network-security-config",
+    "permissions",
+    "linter",
+    "cli"
+  ],
+  "author": "INNERLUXES <info@innerluxes.dev>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/INNERLUXES/mobile-manifest-check.git"
+  },
+  "homepage": "https://innerluxes.dev/application/mobile/consulting"
+}
