@@ -1,0 +1,21 @@
+# Every change is reviewed by a maintainer.
+* @innerluxesdev
+
+# The XML reader, the rules, the points of the public pages, the MASVS mapping, the checks and the output decide every
+# result and what is read from the disk; changes need extra care.
+/src/data.js @innerluxesdev
+/src/masvs.js @innerluxesdev
+/research/ @innerluxesdev
+/src/files.js @innerluxesdev
+/src/glob.js @innerluxesdev
+/src/json.js @innerluxesdev
+/src/xml.js @innerluxesdev
+/src/plist.js @innerluxesdev
+/src/permissions.js @innerluxesdev
+/src/android.js @innerluxesdev
+/src/ios.js @innerluxesdev
+/src/config.js @innerluxesdev
+/src/analyse.js @innerluxesdev
+/src/rules.js @innerluxesdev
+/src/check.js @innerluxesdev
+/src/report.js @innerluxesdev
