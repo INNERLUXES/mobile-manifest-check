@@ -1,0 +1,5 @@
+{
+  "name": "Tidepool",
+  "placeholders": { "add": ["coming soon"] },
+  "failOn": "warning"
+}

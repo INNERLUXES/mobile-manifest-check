@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tidepool, a made-up tide diary, before its release: one risky setting of every kind, and a near miss next to most. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="example.tidepool">
+
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="27" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission-sdk-23 android:name="android.permission.RECORD_AUDIO" />
+
+    <permission android:name="example.tidepool.permission.SYNC" />
+
+    <application
+        android:label="Tidepool"
+        android:debuggable="true"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:fullBackupContent="@xml/backup_rules">
+
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ShareTideActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".DeepLinkActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tidepool" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".SettingsActivity" android:exported="false" />
+
+        <service
+            android:name=".SyncService"
+            android:exported="true"
+            android:permission="example.tidepool.permission.SYNC" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="example.tidepool.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <provider
+            android:name=".PhotoProvider"
+            android:authorities="example.tidepool.photos"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/photo_paths" />
+        </provider>
+
+        <provider
+            android:name=".TideLogProvider"
+            android:authorities="example.tidepool.log"
+            android:exported="true"
+            android:readPermission="example.tidepool.permission.READ_LOG">
+            <grant-uri-permission android:pathPrefix="/" />
+        </provider>
+
+        <!-- An old screen, kept for reference: <activity android:name=".OldActivity" android:exported="true" /> -->
+    </application>
+</manifest>

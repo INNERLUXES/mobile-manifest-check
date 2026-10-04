@@ -1,0 +1,1676 @@
+{
+  "tool": "mobile-manifest-check",
+  "version": "1.0.0",
+  "input": {
+    "paths": [
+      "examples/risky"
+    ],
+    "files": [
+      {
+        "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+        "kind": "android-manifest",
+        "read": true
+      },
+      {
+        "file": "examples/risky/android/app/src/main/res/xml/network_security_config.xml",
+        "kind": "android-resource",
+        "read": true
+      },
+      {
+        "file": "examples/risky/android/app/src/main/res/xml/file_paths.xml",
+        "kind": "android-resource",
+        "read": true
+      },
+      {
+        "file": "examples/risky/ios/Tidepool/Info.plist",
+        "kind": "ios-plist",
+        "read": true
+      },
+      {
+        "file": "examples/risky/ios/TidepoolWidget/Info.plist",
+        "kind": "ios-plist",
+        "read": false
+      }
+    ],
+    "byKind": {
+      "android-manifest": 1,
+      "android-resource": 2,
+      "ios-plist": 2
+    }
+  },
+  "config": {
+    "file": "examples/config.json",
+    "name": "Tidepool",
+    "files": [
+      "**/AndroidManifest.xml",
+      "**/Info.plist",
+      "**/*-Info.plist"
+    ],
+    "exclude": [
+      "**/build/**",
+      "**/Pods/**",
+      "**/Carthage/**",
+      "**/DerivedData/**",
+      "**/*.xcarchive/**"
+    ],
+    "placeholders": [
+      "todo",
+      "tbd",
+      "fixme",
+      "placeholder",
+      "lorem ipsum",
+      "test",
+      "xxx",
+      "description",
+      "usage description",
+      "purpose string",
+      "add a description",
+      "description goes here",
+      "your description here",
+      "enter a description",
+      "n/a",
+      "none",
+      "string",
+      "coming soon"
+    ],
+    "minSeverity": "info",
+    "failOn": "warning",
+    "rules": [
+      {
+        "id": "dangerous-permission",
+        "key": "dangerousPermission",
+        "platform": "android",
+        "level": "info",
+        "masvs": [
+          "MASVS-PRIVACY-1"
+        ],
+        "rule": "a uses-permission element that names a system permission of protection level dangerous, or a special permission"
+      },
+      {
+        "id": "restricted-permission",
+        "key": "restrictedPermission",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-PRIVACY-1"
+        ],
+        "rule": "a uses-permission element that names a permission of the SMS or Call Log groups, location in the background, or QUERY_ALL_PACKAGES"
+      },
+      {
+        "id": "debuggable",
+        "key": "debuggable",
+        "platform": "android",
+        "level": "error",
+        "masvs": [
+          "MASVS-RESILIENCE-4"
+        ],
+        "rule": "android:debuggable=\"true\" on the application element"
+      },
+      {
+        "id": "allow-backup",
+        "key": "allowBackup",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-STORAGE-2"
+        ],
+        "rule": "an application element with android:allowBackup=\"true\" or without android:allowBackup"
+      },
+      {
+        "id": "cleartext-traffic",
+        "key": "cleartextTraffic",
+        "platform": "android",
+        "level": "error",
+        "masvs": [
+          "MASVS-NETWORK-1"
+        ],
+        "rule": "android:usesCleartextTraffic=\"true\", <base-config cleartextTrafficPermitted=\"true\">, or a uses-sdk targetSdkVersion below 28 that leaves cleartext on by default"
+      },
+      {
+        "id": "cleartext-domain",
+        "key": "cleartextDomain",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-NETWORK-1"
+        ],
+        "rule": "<domain-config cleartextTrafficPermitted=\"true\"> in the network security config"
+      },
+      {
+        "id": "user-certificates",
+        "key": "userCertificates",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-NETWORK-1"
+        ],
+        "rule": "<certificates src=\"user\"/> in a base-config or domain-config of the network security config"
+      },
+      {
+        "id": "exported-component",
+        "key": "exportedComponent",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-PLATFORM-1"
+        ],
+        "rule": "an app component with android:exported=\"true\" and no permission that other apps must hold"
+      },
+      {
+        "id": "missing-exported",
+        "key": "missingExported",
+        "platform": "android",
+        "level": "error",
+        "masvs": [
+          "MASVS-PLATFORM-1"
+        ],
+        "rule": "an activity, activity-alias, service or receiver with an <intent-filter> child and no android:exported attribute"
+      },
+      {
+        "id": "provider-broad-paths",
+        "key": "providerBroadPaths",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-PLATFORM-1",
+          "MASVS-STORAGE-2"
+        ],
+        "rule": "a provider with grantUriPermissions=\"true\" whose paths share a whole directory or the root, or a grant-uri-permission that covers every path"
+      },
+      {
+        "id": "missing-resource",
+        "key": "missingResource",
+        "platform": "android",
+        "level": "warning",
+        "masvs": [
+          "MASVS-NETWORK-1",
+          "MASVS-PLATFORM-1"
+        ],
+        "rule": "android:networkSecurityConfig or the FILE_PROVIDER_PATHS meta-data names @xml/<name>, and res/xml/<name>.xml is not next to the manifest"
+      },
+      {
+        "id": "usage-description",
+        "key": "usageDescription",
+        "platform": "ios",
+        "level": "info",
+        "masvs": [
+          "MASVS-PRIVACY-3"
+        ],
+        "rule": "a key ending in UsageDescription at the top of the Info.plist, with a text that is not empty and not a placeholder"
+      },
+      {
+        "id": "empty-usage-description",
+        "key": "emptyUsageDescription",
+        "platform": "ios",
+        "level": "error",
+        "masvs": [
+          "MASVS-PRIVACY-3"
+        ],
+        "rule": "a key ending in UsageDescription whose value is not a string, is empty, is 4,000 bytes or more, or is a placeholder (18 listed texts and the forms of docs/method.md)"
+      },
+      {
+        "id": "missing-usage-description",
+        "key": "missingUsageDescription",
+        "platform": "ios",
+        "level": "error",
+        "masvs": [
+          "MASVS-PRIVACY-3"
+        ],
+        "rule": "a background mode, required device capability or location key that needs a usage description the Info.plist does not hold"
+      },
+      {
+        "id": "ats-arbitrary-loads",
+        "key": "atsArbitraryLoads",
+        "platform": "ios",
+        "level": "error",
+        "masvs": [
+          "MASVS-NETWORK-1"
+        ],
+        "rule": "NSAppTransportSecurity with NSAllowsArbitraryLoads true"
+      },
+      {
+        "id": "ats-exception",
+        "key": "atsException",
+        "platform": "ios",
+        "level": "warning",
+        "masvs": [
+          "MASVS-NETWORK-1"
+        ],
+        "rule": "an ATS key that allows plain HTTP for web content, media or a named domain, or a minimum TLS version below 1.2"
+      },
+      {
+        "id": "file-sharing",
+        "key": "fileSharing",
+        "platform": "ios",
+        "level": "info",
+        "masvs": [
+          "MASVS-STORAGE-2"
+        ],
+        "rule": "UIFileSharingEnabled or LSSupportsOpeningDocumentsInPlace true"
+      },
+      {
+        "id": "encryption-declaration",
+        "key": "encryptionDeclaration",
+        "platform": "ios",
+        "level": "info",
+        "masvs": [
+          "MASVS-CRYPTO-1"
+        ],
+        "rule": "an Info.plist without ITSAppUsesNonExemptEncryption"
+      },
+      {
+        "id": "unreadable-file",
+        "key": null,
+        "platform": "input",
+        "level": "error",
+        "masvs": [],
+        "rule": "a file of the input that the tool could not read as UTF-8 text"
+      },
+      {
+        "id": "unparsable-file",
+        "key": null,
+        "platform": "input",
+        "level": "error",
+        "masvs": [],
+        "rule": "a manifest, XML resource or property list that the XML reader refuses or that is not a manifest, a network security config, a paths resource or a property list"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "rule": "debuggable",
+      "level": "error",
+      "platform": "android",
+      "masvs": [
+        "MASVS-RESILIENCE-4"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 25,
+      "column": 9,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:25",
+      "found": "android:debuggable=\"true\" on <application>: the build can be debugged on any device, and app stores do not accept a debuggable app",
+      "fix": "remove android:debuggable from the manifest; the build tools set it for debug builds only",
+      "basis": [
+        {
+          "text": "android:debuggable says whether the app can be debugged even on a device in user mode, and it is false by default",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        },
+        {
+          "text": "a debuggable app lets an attacker debug it and reach parts of it that should stay closed, so the flag must be false in the build that ships",
+          "source": "android:debuggable (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/android-debuggable"
+        }
+      ],
+      "own": "only the literal value true counts; a resource reference such as @bool/debug or a manifest placeholder is not resolved"
+    },
+    {
+      "rule": "cleartext-traffic",
+      "level": "error",
+      "platform": "android",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 26,
+      "column": 9,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:26",
+      "found": "android:usesCleartextTraffic=\"true\": every connection of the app may use cleartext HTTP; on Android 7.0 and higher the network security config @xml/network_security_config decides instead",
+      "fix": "set android:usesCleartextTraffic=\"false\" and cleartextTrafficPermitted=\"false\" in the base-config, and use HTTPS; allow cleartext only to a named domain that needs it",
+      "basis": [
+        {
+          "text": "android:usesCleartextTraffic is true by default up to target API level 27 and false from 28, and a network security config decides instead on API level 24 and higher",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        },
+        {
+          "text": "a network security config sets cleartextTrafficPermitted and the trusted certificate authorities for the whole app in base-config and per domain in domain-config, and debug-overrides apply only to debuggable builds",
+          "source": "Network security configuration (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/security-config"
+        },
+        {
+          "text": "cleartext traffic can be read and changed by anyone on the network path, so data should go over encrypted channels, with cleartext opted out in the network security config",
+          "source": "Cleartext communications (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/cleartext-communications"
+        }
+      ],
+      "own": "android:usesCleartextTraffic=\"true\", a base-config with cleartextTrafficPermitted=\"true\", or a targetSdkVersion below 28 written in the manifest with neither of the two set to false; a target API level set only in the Gradle build is not seen"
+    },
+    {
+      "rule": "missing-exported",
+      "level": "error",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 45,
+      "column": 9,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:45",
+      "found": "<activity android:name=\".DeepLinkActivity\"> has an <intent-filter> and no android:exported: the app cannot be installed on Android 12 and higher, and on older systems the component is exported",
+      "fix": "set android:exported explicitly: true only when other apps must start the component, false otherwise",
+      "basis": [
+        {
+          "text": "an activity, service or broadcast receiver with an intent filter and no explicit android:exported cannot be installed on Android 12 or higher",
+          "source": "Behavior changes: Apps targeting Android 12 (Android Developers)",
+          "url": "https://developer.android.com/about/versions/12/behavior-changes-12"
+        },
+        {
+          "text": "the default of android:exported differed between versions and kinds of component, so it should always be set, or internal components may be exposed to other apps",
+          "source": "android:exported (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/android-exported"
+        }
+      ],
+      "own": "an activity, activity-alias, service or receiver with an intent-filter and no android:exported; an error, because the app cannot be installed on Android 12 and higher"
+    },
+    {
+      "rule": "cleartext-traffic",
+      "level": "error",
+      "platform": "android",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/android/app/src/main/res/xml/network_security_config.xml",
+      "line": 3,
+      "column": 18,
+      "at": "examples/risky/android/app/src/main/res/xml/network_security_config.xml:3",
+      "found": "<base-config cleartextTrafficPermitted=\"true\">: cleartext traffic is permitted to every domain that no domain-config names",
+      "fix": "set android:usesCleartextTraffic=\"false\" and cleartextTrafficPermitted=\"false\" in the base-config, and use HTTPS; allow cleartext only to a named domain that needs it",
+      "basis": [
+        {
+          "text": "android:usesCleartextTraffic is true by default up to target API level 27 and false from 28, and a network security config decides instead on API level 24 and higher",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        },
+        {
+          "text": "a network security config sets cleartextTrafficPermitted and the trusted certificate authorities for the whole app in base-config and per domain in domain-config, and debug-overrides apply only to debuggable builds",
+          "source": "Network security configuration (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/security-config"
+        },
+        {
+          "text": "cleartext traffic can be read and changed by anyone on the network path, so data should go over encrypted channels, with cleartext opted out in the network security config",
+          "source": "Cleartext communications (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/cleartext-communications"
+        }
+      ],
+      "own": "android:usesCleartextTraffic=\"true\", a base-config with cleartextTrafficPermitted=\"true\", or a targetSdkVersion below 28 written in the manifest with neither of the two set to false; a target API level set only in the Gradle build is not seen"
+    },
+    {
+      "rule": "empty-usage-description",
+      "level": "error",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 11,
+      "column": 2,
+      "at": "examples/risky/ios/Tidepool/Info.plist:11",
+      "found": "NSMicrophoneUsageDescription (microphone) holds the placeholder \"TODO\": the system shows no useful reason when it asks the user, and App Review rejects an app whose purpose string is not valid",
+      "fix": "write one specific sentence that tells the user why the app needs the resource",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        }
+      ],
+      "own": "empty or white space only, a placeholder of the list of the configuration (docs/inputs.md), text that starts with TODO, FIXME, TBD, lorem ipsum or placeholder, punctuation only, the name of the key itself, 4,000 bytes or more, or a value that is not a string"
+    },
+    {
+      "rule": "empty-usage-description",
+      "level": "error",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 13,
+      "column": 2,
+      "at": "examples/risky/ios/Tidepool/Info.plist:13",
+      "found": "NSContactsUsageDescription (contacts) is empty: the system shows no useful reason when it asks the user, and App Review rejects an app whose purpose string is not valid",
+      "fix": "write one specific sentence that tells the user why the app needs the resource",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        }
+      ],
+      "own": "empty or white space only, a placeholder of the list of the configuration (docs/inputs.md), text that starts with TODO, FIXME, TBD, lorem ipsum or placeholder, punctuation only, the name of the key itself, 4,000 bytes or more, or a value that is not a string"
+    },
+    {
+      "rule": "empty-usage-description",
+      "level": "error",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 15,
+      "column": 2,
+      "at": "examples/risky/ios/Tidepool/Info.plist:15",
+      "found": "NSPhotoLibraryUsageDescription (photo library) holds the placeholder \"Coming soon.\": the system shows no useful reason when it asks the user, and App Review rejects an app whose purpose string is not valid",
+      "fix": "write one specific sentence that tells the user why the app needs the resource",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        }
+      ],
+      "own": "empty or white space only, a placeholder of the list of the configuration (docs/inputs.md), text that starts with TODO, FIXME, TBD, lorem ipsum or placeholder, punctuation only, the name of the key itself, 4,000 bytes or more, or a value that is not a string"
+    },
+    {
+      "rule": "missing-usage-description",
+      "level": "error",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 21,
+      "column": 3,
+      "at": "examples/risky/ios/Tidepool/Info.plist:21",
+      "found": "UIBackgroundModes holds location, but NSLocationWhenInUseUsageDescription (location while in use) is missing: the app cannot ask for that access, and an attempt to use it fails and may end the app",
+      "fix": "add the usage description the capability needs, or remove the capability if the app does not use it",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        },
+        {
+          "text": "UIBackgroundModes lists the services that need the app to run in the background, such as location, audio and the Bluetooth roles",
+          "source": "UIBackgroundModes (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/uibackgroundmodes"
+        },
+        {
+          "text": "UIRequiredDeviceCapabilities names the features an app needs, such as a camera, the microphone, location services or NFC, as an array or as a dictionary of Booleans",
+          "source": "UIRequiredDeviceCapabilities (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/uirequireddevicecapabilities"
+        },
+        {
+          "text": "NSLocationAlwaysAndWhenInUseUsageDescription is required when an iOS app reads the location at all times, also in the background",
+          "source": "NSLocationAlwaysAndWhenInUseUsageDescription (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nslocationalwaysandwheninuseusagedescription"
+        },
+        {
+          "text": "NSLocationWhenInUseUsageDescription is required when an iOS app reads the location while it is in use",
+          "source": "NSLocationWhenInUseUsageDescription (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nslocationwheninuseusagedescription"
+        },
+        {
+          "text": "NSBluetoothAlwaysUsageDescription is required when the app uses the Bluetooth interface of the device",
+          "source": "NSBluetoothAlwaysUsageDescription (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsbluetoothalwaysusagedescription"
+        }
+      ],
+      "own": "only what the Info.plist itself hints at: location, bluetooth-central or bluetooth-peripheral in UIBackgroundModes, a camera, microphone, location, Bluetooth, HealthKit or NFC capability in UIRequiredDeviceCapabilities, and the always-and-when-in-use location key without the when-in-use key; the code of the app is not read"
+    },
+    {
+      "rule": "missing-usage-description",
+      "level": "error",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 27,
+      "column": 3,
+      "at": "examples/risky/ios/Tidepool/Info.plist:27",
+      "found": "UIRequiredDeviceCapabilities requires bluetooth-le, but NSBluetoothAlwaysUsageDescription (Bluetooth) is missing: the app cannot ask for that access, and an attempt to use it fails and may end the app",
+      "fix": "add the usage description the capability needs, or remove the capability if the app does not use it",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        },
+        {
+          "text": "UIBackgroundModes lists the services that need the app to run in the background, such as location, audio and the Bluetooth roles",
+          "source": "UIBackgroundModes (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/uibackgroundmodes"
+        },
+        {
+          "text": "UIRequiredDeviceCapabilities names the features an app needs, such as a camera, the microphone, location services or NFC, as an array or as a dictionary of Booleans",
+          "source": "UIRequiredDeviceCapabilities (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/uirequireddevicecapabilities"
+        },
+        {
+          "text": "NSLocationAlwaysAndWhenInUseUsageDescription is required when an iOS app reads the location at all times, also in the background",
+          "source": "NSLocationAlwaysAndWhenInUseUsageDescription (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nslocationalwaysandwheninuseusagedescription"
+        },
+        {
+          "text": "NSLocationWhenInUseUsageDescription is required when an iOS app reads the location while it is in use",
+          "source": "NSLocationWhenInUseUsageDescription (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nslocationwheninuseusagedescription"
+        },
+        {
+          "text": "NSBluetoothAlwaysUsageDescription is required when the app uses the Bluetooth interface of the device",
+          "source": "NSBluetoothAlwaysUsageDescription (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsbluetoothalwaysusagedescription"
+        }
+      ],
+      "own": "only what the Info.plist itself hints at: location, bluetooth-central or bluetooth-peripheral in UIBackgroundModes, a camera, microphone, location, Bluetooth, HealthKit or NFC capability in UIRequiredDeviceCapabilities, and the always-and-when-in-use location key without the when-in-use key; the code of the app is not read"
+    },
+    {
+      "rule": "ats-arbitrary-loads",
+      "level": "error",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 31,
+      "column": 3,
+      "at": "examples/risky/ios/Tidepool/Info.plist:31",
+      "found": "NSAllowsArbitraryLoads is true: App Transport Security is off for every domain not named in NSExceptionDomains, so plain HTTP and weak TLS are allowed; iOS 10 and later ignore it because NSAllowsArbitraryLoadsInWebContent is also set, older systems do not",
+      "fix": "remove NSAllowsArbitraryLoads and move the servers to HTTPS, or name the one domain that needs an exception in NSExceptionDomains",
+      "basis": [
+        {
+          "text": "App Transport Security makes connections use HTTPS with extra checks, and the NSAppTransportSecurity dictionary loosens it; each loosening lowers the security of the app",
+          "source": "NSAppTransportSecurity (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity"
+        },
+        {
+          "text": "NSAllowsArbitraryLoads set to YES turns ATS off for every domain not named in NSExceptionDomains, needs a justification in App Review, and from iOS 10 is ignored when the web content, media or local networking key is present",
+          "source": "NSAllowsArbitraryLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsallowsarbitraryloads"
+        }
+      ],
+      "own": "NSAllowsArbitraryLoads true in NSAppTransportSecurity; reported even when a web content, media or local networking key makes iOS 10 and later ignore it, because older systems and other platforms do not"
+    },
+    {
+      "rule": "unparsable-file",
+      "level": "error",
+      "platform": "input",
+      "masvs": [],
+      "file": "examples/risky/ios/TidepoolWidget/Info.plist",
+      "line": 2,
+      "column": 1,
+      "at": "examples/risky/ios/TidepoolWidget/Info.plist:2",
+      "found": "line 2, column 1: a document type declaration with an internal subset, where entities are declared; the reader refuses it; nothing in the file is checked",
+      "fix": "correct the file at the line and column named; write the text of a declared entity out in full instead",
+      "basis": [
+        {
+          "text": "XML predefines five entities (lt, gt, amp, apos, quot) and character references; any other entity must be declared in a document type declaration",
+          "source": "Extensible Markup Language (XML) 1.0 (W3C)",
+          "url": "https://www.w3.org/TR/xml/"
+        },
+        {
+          "text": "the safest XML reader refuses document type declarations; one that needs them must not load external entities or external DTDs and must limit entity expansion",
+          "source": "XML External Entity Prevention Cheat Sheet (OWASP)",
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html"
+        },
+        {
+          "text": "an Info.plist is a property list of keys and values that tells the system how to treat the bundle, and the file name is Info.plist",
+          "source": "Information Property List (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list"
+        }
+      ],
+      "own": "a tag, comment or value that is not closed, an end tag that does not match, a declared entity or an internal document type subset, or a root element of the wrong kind stops the reading of the file, and nothing in it is checked; this rule cannot be set lower or off"
+    },
+    {
+      "rule": "restricted-permission",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 11,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:11",
+      "found": "android.permission.ACCESS_BACKGROUND_LOCATION is requested: Google Play reviews location in the background and asks for a declaration of the feature that needs it",
+      "fix": "remove the permission, or prepare the declaration the store asks for; for package visibility, name the apps in a <queries> element instead",
+      "basis": [
+        {
+          "text": "Google Play lets an app use the call log and SMS permission groups only when it is the default handler for that function, or meets an exception of the Play Console Help Center",
+          "source": "Permissions used only in default handlers (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/default-handlers"
+        },
+        {
+          "text": "the policy limits the SMS and Call Log permission groups to the default handler of the function and a short list of exceptions, declared in the Play Console",
+          "source": "Use of SMS or Call Log permission groups (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/10208820"
+        },
+        {
+          "text": "an app that targets API level 29 or higher and holds ACCESS_BACKGROUND_LOCATION has to describe the feature that uses location in the background before it is published",
+          "source": "Understanding location in the background permissions (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/9799150"
+        },
+        {
+          "text": "from Android 11 an app sees only some other apps by default; QUERY_ALL_PACKAGES sees all of them, and on Google Play its use needs approval",
+          "source": "Package visibility filtering on Android (Android Developers)",
+          "url": "https://developer.android.com/training/package-visibility"
+        },
+        {
+          "text": "Google Play counts the list of installed apps as personal and sensitive data and allows QUERY_ALL_PACKAGES only for uses its policy accepts, declared in a form",
+          "source": "Use of the broad package (App) visibility (QUERY_ALL_PACKAGES) permission (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/10158779"
+        }
+      ],
+      "own": "ACCESS_BACKGROUND_LOCATION, the SMS group (SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS), the Call Log group (READ_CALL_LOG, WRITE_CALL_LOG, PROCESS_OUTGOING_CALLS) and QUERY_ALL_PACKAGES; a warning, because the store asks for a declaration or refuses the app, whatever the code does"
+    },
+    {
+      "rule": "restricted-permission",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 12,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:12",
+      "found": "android.permission.READ_SMS is requested: Google Play allows the SMS group only to a default SMS handler, or for an approved exception",
+      "fix": "remove the permission, or prepare the declaration the store asks for; for package visibility, name the apps in a <queries> element instead",
+      "basis": [
+        {
+          "text": "Google Play lets an app use the call log and SMS permission groups only when it is the default handler for that function, or meets an exception of the Play Console Help Center",
+          "source": "Permissions used only in default handlers (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/default-handlers"
+        },
+        {
+          "text": "the policy limits the SMS and Call Log permission groups to the default handler of the function and a short list of exceptions, declared in the Play Console",
+          "source": "Use of SMS or Call Log permission groups (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/10208820"
+        },
+        {
+          "text": "an app that targets API level 29 or higher and holds ACCESS_BACKGROUND_LOCATION has to describe the feature that uses location in the background before it is published",
+          "source": "Understanding location in the background permissions (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/9799150"
+        },
+        {
+          "text": "from Android 11 an app sees only some other apps by default; QUERY_ALL_PACKAGES sees all of them, and on Google Play its use needs approval",
+          "source": "Package visibility filtering on Android (Android Developers)",
+          "url": "https://developer.android.com/training/package-visibility"
+        },
+        {
+          "text": "Google Play counts the list of installed apps as personal and sensitive data and allows QUERY_ALL_PACKAGES only for uses its policy accepts, declared in a form",
+          "source": "Use of the broad package (App) visibility (QUERY_ALL_PACKAGES) permission (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/10158779"
+        }
+      ],
+      "own": "ACCESS_BACKGROUND_LOCATION, the SMS group (SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS), the Call Log group (READ_CALL_LOG, WRITE_CALL_LOG, PROCESS_OUTGOING_CALLS) and QUERY_ALL_PACKAGES; a warning, because the store asks for a declaration or refuses the app, whatever the code does"
+    },
+    {
+      "rule": "restricted-permission",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 18,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:18",
+      "found": "android.permission.QUERY_ALL_PACKAGES is requested: Google Play allows the visibility of every installed app only for an approved use, declared in the Play Console",
+      "fix": "remove the permission, or prepare the declaration the store asks for; for package visibility, name the apps in a <queries> element instead",
+      "basis": [
+        {
+          "text": "Google Play lets an app use the call log and SMS permission groups only when it is the default handler for that function, or meets an exception of the Play Console Help Center",
+          "source": "Permissions used only in default handlers (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/default-handlers"
+        },
+        {
+          "text": "the policy limits the SMS and Call Log permission groups to the default handler of the function and a short list of exceptions, declared in the Play Console",
+          "source": "Use of SMS or Call Log permission groups (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/10208820"
+        },
+        {
+          "text": "an app that targets API level 29 or higher and holds ACCESS_BACKGROUND_LOCATION has to describe the feature that uses location in the background before it is published",
+          "source": "Understanding location in the background permissions (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/9799150"
+        },
+        {
+          "text": "from Android 11 an app sees only some other apps by default; QUERY_ALL_PACKAGES sees all of them, and on Google Play its use needs approval",
+          "source": "Package visibility filtering on Android (Android Developers)",
+          "url": "https://developer.android.com/training/package-visibility"
+        },
+        {
+          "text": "Google Play counts the list of installed apps as personal and sensitive data and allows QUERY_ALL_PACKAGES only for uses its policy accepts, declared in a form",
+          "source": "Use of the broad package (App) visibility (QUERY_ALL_PACKAGES) permission (Play Console Help)",
+          "url": "https://support.google.com/googleplay/android-developer/answer/10158779"
+        }
+      ],
+      "own": "ACCESS_BACKGROUND_LOCATION, the SMS group (SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS), the Call Log group (READ_CALL_LOG, WRITE_CALL_LOG, PROCESS_OUTGOING_CALLS) and QUERY_ALL_PACKAGES; a warning, because the store asks for a declaration or refuses the app, whatever the code does"
+    },
+    {
+      "rule": "allow-backup",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-STORAGE-2"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 23,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:23",
+      "found": "android:allowBackup is not set, and it is true by default: the app data goes into cloud backups and device-to-device transfers; backup rules are named in android:fullBackupContent (@xml/backup_rules), which the tool does not read",
+      "fix": "set android:allowBackup=\"false\", or keep backups and leave every sensitive file out with android:dataExtractionRules and android:fullBackupContent",
+      "basis": [
+        {
+          "text": "android:allowBackup decides whether the app takes part in backup and restore, it is true by default, and dataExtractionRules can leave sensitive files out",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        },
+        {
+          "text": "Auto Backup is on unless allowBackup is false, the page advises setting the attribute explicitly, and on Android 12 some devices still move data from device to device",
+          "source": "Back up user data with Auto Backup (Android Developers)",
+          "url": "https://developer.android.com/identity/data/autobackup"
+        },
+        {
+          "text": "backups should hold no sensitive data: leave it out of the backup, or require end-to-end encryption where it cannot be left out",
+          "source": "Security recommendations for backups (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/risks/backup-best-practices"
+        }
+      ],
+      "own": "android:allowBackup=\"true\", or no android:allowBackup at all, since true is the default; a backup rules resource that is named is mentioned but not read"
+    },
+    {
+      "rule": "exported-component",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 37,
+      "column": 53,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:37",
+      "found": "<activity android:name=\".ShareTideActivity\"> is exported with no permission: any app can start it",
+      "fix": "set android:exported=\"false\" unless other apps must reach the component; if they must, require a permission of protection level signature",
+      "basis": [
+        {
+          "text": "an exported activity can be started by any app by its class name, false is the default when it has no intent filter, and a launcher activity must be exported",
+          "source": "<activity> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/activity-element"
+        },
+        {
+          "text": "the default of android:exported differed between versions and kinds of component, so it should always be set, or internal components may be exposed to other apps",
+          "source": "android:exported (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/android-exported"
+        },
+        {
+          "text": "android:permission on the application sets a permission that applies to all of its components",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        }
+      ],
+      "own": "an activity, activity-alias, service, receiver or provider with android:exported=\"true\" and no android:permission of its own or of the application (for a provider, also no read and write permissions); an activity with the MAIN action and the LAUNCHER category is not reported, since it must be exported; a permission this manifest declares with protection level normal counts as none"
+    },
+    {
+      "rule": "exported-component",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 57,
+      "column": 13,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:57",
+      "found": "<service android:name=\".SyncService\"> is exported with the permission example.tidepool.permission.SYNC, which this manifest declares with protection level normal, so any app can hold it: any app can start or bind to it",
+      "fix": "set android:exported=\"false\" unless other apps must reach the component; if they must, require a permission of protection level signature",
+      "basis": [
+        {
+          "text": "an exported activity can be started by any app by its class name, false is the default when it has no intent filter, and a launcher activity must be exported",
+          "source": "<activity> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/activity-element"
+        },
+        {
+          "text": "the default of android:exported differed between versions and kinds of component, so it should always be set, or internal components may be exposed to other apps",
+          "source": "android:exported (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/android-exported"
+        },
+        {
+          "text": "android:permission on the application sets a permission that applies to all of its components",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        }
+      ],
+      "own": "an activity, activity-alias, service, receiver or provider with android:exported=\"true\" and no android:permission of its own or of the application (for a provider, also no read and write permissions); an activity with the MAIN action and the LAUNCHER category is not reported, since it must be exported; a permission this manifest declares with protection level normal counts as none"
+    },
+    {
+      "rule": "missing-resource",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-NETWORK-1",
+        "MASVS-PLATFORM-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 80,
+      "column": 13,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:80",
+      "found": "the android.support.FILE_PROVIDER_PATHS meta-data of .PhotoProvider names @xml/photo_paths, but res/xml/photo_paths.xml is not next to this manifest; its settings were not checked",
+      "fix": "name the manifest of the source set that holds res/xml, or check the merged resource by hand",
+      "basis": [
+        {
+          "text": "a network security config sets cleartextTrafficPermitted and the trusted certificate authorities for the whole app in base-config and per domain in domain-config, and debug-overrides apply only to debuggable builds",
+          "source": "Network security configuration (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/security-config"
+        },
+        {
+          "text": "a FileProvider makes content URIs only for the directories its paths resource names, linked through the meta-data android.support.FILE_PROVIDER_PATHS, and it should not be exported",
+          "source": "FileProvider (AndroidX API reference)",
+          "url": "https://developer.android.com/reference/androidx/core/content/FileProvider"
+        }
+      ],
+      "own": "the network security config and the FileProvider paths are looked for at res/xml/<name>.xml next to the manifest; a resource of another source set, flavor or library is not found, so its settings are not checked"
+    },
+    {
+      "rule": "exported-component",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 88,
+      "column": 13,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:88",
+      "found": "<provider android:name=\".TideLogProvider\"> is exported with a permission for only one of reading and writing: any app can query or change its data",
+      "fix": "set android:exported=\"false\" unless other apps must reach the component; if they must, require a permission of protection level signature",
+      "basis": [
+        {
+          "text": "an exported activity can be started by any app by its class name, false is the default when it has no intent filter, and a launcher activity must be exported",
+          "source": "<activity> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/activity-element"
+        },
+        {
+          "text": "the default of android:exported differed between versions and kinds of component, so it should always be set, or internal components may be exposed to other apps",
+          "source": "android:exported (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/android-exported"
+        },
+        {
+          "text": "android:permission on the application sets a permission that applies to all of its components",
+          "source": "<application> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/application-element"
+        }
+      ],
+      "own": "an activity, activity-alias, service, receiver or provider with android:exported=\"true\" and no android:permission of its own or of the application (for a provider, also no read and write permissions); an activity with the MAIN action and the LAUNCHER category is not reported, since it must be exported; a permission this manifest declares with protection level normal counts as none"
+    },
+    {
+      "rule": "provider-broad-paths",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1",
+        "MASVS-STORAGE-2"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 90,
+      "column": 13,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:90",
+      "found": "<grant-uri-permission android:pathPrefix=\"/\"> of <provider android:name=\".TideLogProvider\"> covers every path of the provider",
+      "fix": "share only the subdirectories that hold the files to share, never root-path, and name narrow grant-uri-permission paths",
+      "basis": [
+        {
+          "text": "with grantUriPermissions true, access can be granted to any of the data of a provider; with false, only to the subsets its grant-uri-permission elements name",
+          "source": "<provider> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/provider-element"
+        },
+        {
+          "text": "a FileProvider makes content URIs only for the directories its paths resource names, linked through the meta-data android.support.FILE_PROVIDER_PATHS, and it should not be exported",
+          "source": "FileProvider (AndroidX API reference)",
+          "url": "https://developer.android.com/reference/androidx/core/content/FileProvider"
+        },
+        {
+          "text": "root-path exposes the root of the device, a path of . or / shares a whole directory, and external-path should not share sensitive data",
+          "source": "Improperly Exposed Directories to FileProvider (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/file-providers"
+        }
+      ],
+      "own": "a FileProvider paths resource with root-path, or with a path element whose path is missing, empty, . or /; a grant-uri-permission whose path or pathPrefix is / or empty or whose pathPattern is .* or /.*; and a provider with grantUriPermissions=\"true\" and no paths resource, whose grants reach all of its data"
+    },
+    {
+      "rule": "user-certificates",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/android/app/src/main/res/xml/network_security_config.xml",
+      "line": 6,
+      "column": 13,
+      "at": "examples/risky/android/app/src/main/res/xml/network_security_config.xml:6",
+      "found": "<certificates src=\"user\"/> in the base-config: certificate authorities the user installed are trusted for every domain, so a proxy with such a certificate can read the traffic",
+      "fix": "trust the system certificate authorities only, and put certificates for testing under <debug-overrides>",
+      "basis": [
+        {
+          "text": "apps that target API level 24 and higher trust only the system certificate authorities by default; certificates src=\"user\" adds the ones the user installed",
+          "source": "Network security configuration (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/security-config"
+        },
+        {
+          "text": "a network security config sets cleartextTrafficPermitted and the trusted certificate authorities for the whole app in base-config and per domain in domain-config, and debug-overrides apply only to debuggable builds",
+          "source": "Network security configuration (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/security-config"
+        }
+      ],
+      "own": "certificates src=\"user\" in the trust anchors of a base-config or domain-config; inside debug-overrides it applies to debuggable builds only and is not reported"
+    },
+    {
+      "rule": "cleartext-domain",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/android/app/src/main/res/xml/network_security_config.xml",
+      "line": 9,
+      "column": 20,
+      "at": "examples/risky/android/app/src/main/res/xml/network_security_config.xml:9",
+      "found": "<domain-config cleartextTrafficPermitted=\"true\"> permits cleartext traffic to tiles.tidepool.test and its subdomains",
+      "fix": "move the domains to HTTPS and remove the domain-config, or keep it to the one host that cannot move",
+      "basis": [
+        {
+          "text": "a network security config sets cleartextTrafficPermitted and the trusted certificate authorities for the whole app in base-config and per domain in domain-config, and debug-overrides apply only to debuggable builds",
+          "source": "Network security configuration (Android Developers)",
+          "url": "https://developer.android.com/privacy-and-security/security-config"
+        },
+        {
+          "text": "cleartext traffic can be read and changed by anyone on the network path, so data should go over encrypted channels, with cleartext opted out in the network security config",
+          "source": "Cleartext communications (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/cleartext-communications"
+        }
+      ],
+      "own": "a domain-config with cleartextTrafficPermitted=\"true\" is a warning, not an error, because its scope is the domains it names"
+    },
+    {
+      "rule": "provider-broad-paths",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1",
+        "MASVS-STORAGE-2"
+      ],
+      "file": "examples/risky/android/app/src/main/res/xml/file_paths.xml",
+      "line": 4,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/res/xml/file_paths.xml:4",
+      "found": "<external-path name=\"everything\" path=\".\"> shares the whole external storage, not one subdirectory of it, through <provider android:name=\"androidx.core.content.FileProvider\">",
+      "fix": "share only the subdirectories that hold the files to share, never root-path, and name narrow grant-uri-permission paths",
+      "basis": [
+        {
+          "text": "with grantUriPermissions true, access can be granted to any of the data of a provider; with false, only to the subsets its grant-uri-permission elements name",
+          "source": "<provider> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/provider-element"
+        },
+        {
+          "text": "a FileProvider makes content URIs only for the directories its paths resource names, linked through the meta-data android.support.FILE_PROVIDER_PATHS, and it should not be exported",
+          "source": "FileProvider (AndroidX API reference)",
+          "url": "https://developer.android.com/reference/androidx/core/content/FileProvider"
+        },
+        {
+          "text": "root-path exposes the root of the device, a path of . or / shares a whole directory, and external-path should not share sensitive data",
+          "source": "Improperly Exposed Directories to FileProvider (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/file-providers"
+        }
+      ],
+      "own": "a FileProvider paths resource with root-path, or with a path element whose path is missing, empty, . or /; a grant-uri-permission whose path or pathPrefix is / or empty or whose pathPattern is .* or /.*; and a provider with grantUriPermissions=\"true\" and no paths resource, whose grants reach all of its data"
+    },
+    {
+      "rule": "provider-broad-paths",
+      "level": "warning",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PLATFORM-1",
+        "MASVS-STORAGE-2"
+      ],
+      "file": "examples/risky/android/app/src/main/res/xml/file_paths.xml",
+      "line": 5,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/res/xml/file_paths.xml:5",
+      "found": "<root-path name=\"root\" path=\"\"> shares the root of the device file system through <provider android:name=\"androidx.core.content.FileProvider\">",
+      "fix": "share only the subdirectories that hold the files to share, never root-path, and name narrow grant-uri-permission paths",
+      "basis": [
+        {
+          "text": "with grantUriPermissions true, access can be granted to any of the data of a provider; with false, only to the subsets its grant-uri-permission elements name",
+          "source": "<provider> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/provider-element"
+        },
+        {
+          "text": "a FileProvider makes content URIs only for the directories its paths resource names, linked through the meta-data android.support.FILE_PROVIDER_PATHS, and it should not be exported",
+          "source": "FileProvider (AndroidX API reference)",
+          "url": "https://developer.android.com/reference/androidx/core/content/FileProvider"
+        },
+        {
+          "text": "root-path exposes the root of the device, a path of . or / shares a whole directory, and external-path should not share sensitive data",
+          "source": "Improperly Exposed Directories to FileProvider (Android Developers, security risks)",
+          "url": "https://developer.android.com/privacy-and-security/risks/file-providers"
+        }
+      ],
+      "own": "a FileProvider paths resource with root-path, or with a path element whose path is missing, empty, . or /; a grant-uri-permission whose path or pathPrefix is / or empty or whose pathPattern is .* or /.*; and a provider with grantUriPermissions=\"true\" and no paths resource, whose grants reach all of its data"
+    },
+    {
+      "rule": "ats-exception",
+      "level": "warning",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 33,
+      "column": 3,
+      "at": "examples/risky/ios/Tidepool/Info.plist:33",
+      "found": "NSAllowsArbitraryLoadsInWebContent is true: web views may load pages over plain HTTP",
+      "fix": "move the domain to HTTPS with TLS 1.2 or higher and remove the exception",
+      "basis": [
+        {
+          "text": "App Transport Security makes connections use HTTPS with extra checks, and the NSAppTransportSecurity dictionary loosens it; each loosening lowers the security of the app",
+          "source": "NSAppTransportSecurity (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity"
+        },
+        {
+          "text": "NSExceptionDomains holds one dictionary of exceptions per domain, and a domain named there ignores the global ATS keys",
+          "source": "NSExceptionDomains (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains"
+        },
+        {
+          "text": "NSExceptionAllowsInsecureHTTPLoads set to YES allows plain HTTP to the domain, and App Review asks for a justification",
+          "source": "NSExceptionAllowsInsecureHTTPLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsexceptionallowsinsecurehttploads"
+        },
+        {
+          "text": "NSExceptionMinimumTLSVersion defaults to TLSv1.2, and a lower version needs a justification in App Review",
+          "source": "NSExceptionMinimumTLSVersion (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsexceptionminimumtlsversion"
+        },
+        {
+          "text": "NSAllowsArbitraryLoads set to YES turns ATS off for every domain not named in NSExceptionDomains, needs a justification in App Review, and from iOS 10 is ignored when the web content, media or local networking key is present",
+          "source": "NSAllowsArbitraryLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsallowsarbitraryloads"
+        }
+      ],
+      "own": "NSAllowsArbitraryLoadsInWebContent or NSAllowsArbitraryLoadsForMedia true, and an exception domain with NSExceptionAllowsInsecureHTTPLoads or NSThirdPartyExceptionAllowsInsecureHTTPLoads true, or a minimum TLS version below TLSv1.2"
+    },
+    {
+      "rule": "ats-exception",
+      "level": "warning",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 41,
+      "column": 5,
+      "at": "examples/risky/ios/Tidepool/Info.plist:41",
+      "found": "NSExceptionAllowsInsecureHTTPLoads is true for legacy.tidepool.test and its subdomains: plain HTTP is allowed to it",
+      "fix": "move the domain to HTTPS with TLS 1.2 or higher and remove the exception",
+      "basis": [
+        {
+          "text": "App Transport Security makes connections use HTTPS with extra checks, and the NSAppTransportSecurity dictionary loosens it; each loosening lowers the security of the app",
+          "source": "NSAppTransportSecurity (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity"
+        },
+        {
+          "text": "NSExceptionDomains holds one dictionary of exceptions per domain, and a domain named there ignores the global ATS keys",
+          "source": "NSExceptionDomains (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains"
+        },
+        {
+          "text": "NSExceptionAllowsInsecureHTTPLoads set to YES allows plain HTTP to the domain, and App Review asks for a justification",
+          "source": "NSExceptionAllowsInsecureHTTPLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsexceptionallowsinsecurehttploads"
+        },
+        {
+          "text": "NSExceptionMinimumTLSVersion defaults to TLSv1.2, and a lower version needs a justification in App Review",
+          "source": "NSExceptionMinimumTLSVersion (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsexceptionminimumtlsversion"
+        },
+        {
+          "text": "NSAllowsArbitraryLoads set to YES turns ATS off for every domain not named in NSExceptionDomains, needs a justification in App Review, and from iOS 10 is ignored when the web content, media or local networking key is present",
+          "source": "NSAllowsArbitraryLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsallowsarbitraryloads"
+        }
+      ],
+      "own": "NSAllowsArbitraryLoadsInWebContent or NSAllowsArbitraryLoadsForMedia true, and an exception domain with NSExceptionAllowsInsecureHTTPLoads or NSThirdPartyExceptionAllowsInsecureHTTPLoads true, or a minimum TLS version below TLSv1.2"
+    },
+    {
+      "rule": "ats-exception",
+      "level": "warning",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-NETWORK-1"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 43,
+      "column": 5,
+      "at": "examples/risky/ios/Tidepool/Info.plist:43",
+      "found": "NSExceptionMinimumTLSVersion is TLSv1.0 for legacy.tidepool.test and its subdomains: TLS versions below 1.2 are allowed to it",
+      "fix": "move the domain to HTTPS with TLS 1.2 or higher and remove the exception",
+      "basis": [
+        {
+          "text": "App Transport Security makes connections use HTTPS with extra checks, and the NSAppTransportSecurity dictionary loosens it; each loosening lowers the security of the app",
+          "source": "NSAppTransportSecurity (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity"
+        },
+        {
+          "text": "NSExceptionDomains holds one dictionary of exceptions per domain, and a domain named there ignores the global ATS keys",
+          "source": "NSExceptionDomains (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains"
+        },
+        {
+          "text": "NSExceptionAllowsInsecureHTTPLoads set to YES allows plain HTTP to the domain, and App Review asks for a justification",
+          "source": "NSExceptionAllowsInsecureHTTPLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsexceptionallowsinsecurehttploads"
+        },
+        {
+          "text": "NSExceptionMinimumTLSVersion defaults to TLSv1.2, and a lower version needs a justification in App Review",
+          "source": "NSExceptionMinimumTLSVersion (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsexceptionminimumtlsversion"
+        },
+        {
+          "text": "NSAllowsArbitraryLoads set to YES turns ATS off for every domain not named in NSExceptionDomains, needs a justification in App Review, and from iOS 10 is ignored when the web content, media or local networking key is present",
+          "source": "NSAllowsArbitraryLoads (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsallowsarbitraryloads"
+        }
+      ],
+      "own": "NSAllowsArbitraryLoadsInWebContent or NSAllowsArbitraryLoadsForMedia true, and an exception domain with NSExceptionAllowsInsecureHTTPLoads or NSThirdPartyExceptionAllowsInsecureHTTPLoads true, or a minimum TLS version below TLSv1.2"
+    },
+    {
+      "rule": "dangerous-permission",
+      "level": "info",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 9,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:9",
+      "found": "android.permission.CAMERA is requested: a dangerous permission (camera) that the user grants at run time",
+      "fix": "keep the permission only if a feature needs it, and ask for it when the user starts that feature",
+      "basis": [
+        {
+          "text": "runtime permissions, also called dangerous permissions, reach restricted data or actions with more effect on the user, and the app must ask for them while it runs",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "special permissions guard powerful operations, such as drawing over other apps, and the user turns them on in the special app access page of the settings",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "the reference gives the protection level of every system permission, and the ones of level dangerous are the runtime permissions",
+          "source": "Manifest.permission (Android API reference)",
+          "url": "https://developer.android.com/reference/android/Manifest.permission"
+        },
+        {
+          "text": "a uses-permission element names one permission, and maxSdkVersion sets the highest API level at which the app is given it",
+          "source": "<uses-permission> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element"
+        }
+      ],
+      "own": "one finding per permission name, at its first uses-permission or uses-permission-sdk-23 element; the dangerous ones are the system permissions of protection level dangerous, and the special ones a short list of powerful permissions (docs/method.md); a permission Google Play restricts is reported by restricted-permission instead"
+    },
+    {
+      "rule": "dangerous-permission",
+      "level": "info",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 10,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:10",
+      "found": "android.permission.ACCESS_FINE_LOCATION is requested: a dangerous permission (precise location) that the user grants at run time",
+      "fix": "keep the permission only if a feature needs it, and ask for it when the user starts that feature",
+      "basis": [
+        {
+          "text": "runtime permissions, also called dangerous permissions, reach restricted data or actions with more effect on the user, and the app must ask for them while it runs",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "special permissions guard powerful operations, such as drawing over other apps, and the user turns them on in the special app access page of the settings",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "the reference gives the protection level of every system permission, and the ones of level dangerous are the runtime permissions",
+          "source": "Manifest.permission (Android API reference)",
+          "url": "https://developer.android.com/reference/android/Manifest.permission"
+        },
+        {
+          "text": "a uses-permission element names one permission, and maxSdkVersion sets the highest API level at which the app is given it",
+          "source": "<uses-permission> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element"
+        }
+      ],
+      "own": "one finding per permission name, at its first uses-permission or uses-permission-sdk-23 element; the dangerous ones are the system permissions of protection level dangerous, and the special ones a short list of powerful permissions (docs/method.md); a permission Google Play restricts is reported by restricted-permission instead"
+    },
+    {
+      "rule": "dangerous-permission",
+      "level": "info",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 13,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:13",
+      "found": "android.permission.READ_CONTACTS is requested: a dangerous permission (contacts) that the user grants at run time",
+      "fix": "keep the permission only if a feature needs it, and ask for it when the user starts that feature",
+      "basis": [
+        {
+          "text": "runtime permissions, also called dangerous permissions, reach restricted data or actions with more effect on the user, and the app must ask for them while it runs",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "special permissions guard powerful operations, such as drawing over other apps, and the user turns them on in the special app access page of the settings",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "the reference gives the protection level of every system permission, and the ones of level dangerous are the runtime permissions",
+          "source": "Manifest.permission (Android API reference)",
+          "url": "https://developer.android.com/reference/android/Manifest.permission"
+        },
+        {
+          "text": "a uses-permission element names one permission, and maxSdkVersion sets the highest API level at which the app is given it",
+          "source": "<uses-permission> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element"
+        }
+      ],
+      "own": "one finding per permission name, at its first uses-permission or uses-permission-sdk-23 element; the dangerous ones are the system permissions of protection level dangerous, and the special ones a short list of powerful permissions (docs/method.md); a permission Google Play restricts is reported by restricted-permission instead"
+    },
+    {
+      "rule": "dangerous-permission",
+      "level": "info",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 14,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:14",
+      "found": "android.permission.WRITE_EXTERNAL_STORAGE is requested: a dangerous permission (shared storage) that the user grants at run time; requested up to API level 28 only",
+      "fix": "keep the permission only if a feature needs it, and ask for it when the user starts that feature",
+      "basis": [
+        {
+          "text": "runtime permissions, also called dangerous permissions, reach restricted data or actions with more effect on the user, and the app must ask for them while it runs",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "special permissions guard powerful operations, such as drawing over other apps, and the user turns them on in the special app access page of the settings",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "the reference gives the protection level of every system permission, and the ones of level dangerous are the runtime permissions",
+          "source": "Manifest.permission (Android API reference)",
+          "url": "https://developer.android.com/reference/android/Manifest.permission"
+        },
+        {
+          "text": "a uses-permission element names one permission, and maxSdkVersion sets the highest API level at which the app is given it",
+          "source": "<uses-permission> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element"
+        }
+      ],
+      "own": "one finding per permission name, at its first uses-permission or uses-permission-sdk-23 element; the dangerous ones are the system permissions of protection level dangerous, and the special ones a short list of powerful permissions (docs/method.md); a permission Google Play restricts is reported by restricted-permission instead"
+    },
+    {
+      "rule": "dangerous-permission",
+      "level": "info",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 17,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:17",
+      "found": "android.permission.SYSTEM_ALERT_WINDOW is requested: a special permission (drawing over other apps)",
+      "fix": "keep the permission only if a feature needs it, and ask for it when the user starts that feature",
+      "basis": [
+        {
+          "text": "runtime permissions, also called dangerous permissions, reach restricted data or actions with more effect on the user, and the app must ask for them while it runs",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "special permissions guard powerful operations, such as drawing over other apps, and the user turns them on in the special app access page of the settings",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "the reference gives the protection level of every system permission, and the ones of level dangerous are the runtime permissions",
+          "source": "Manifest.permission (Android API reference)",
+          "url": "https://developer.android.com/reference/android/Manifest.permission"
+        },
+        {
+          "text": "a uses-permission element names one permission, and maxSdkVersion sets the highest API level at which the app is given it",
+          "source": "<uses-permission> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element"
+        }
+      ],
+      "own": "one finding per permission name, at its first uses-permission or uses-permission-sdk-23 element; the dangerous ones are the system permissions of protection level dangerous, and the special ones a short list of powerful permissions (docs/method.md); a permission Google Play restricts is reported by restricted-permission instead"
+    },
+    {
+      "rule": "dangerous-permission",
+      "level": "info",
+      "platform": "android",
+      "masvs": [
+        "MASVS-PRIVACY-1"
+      ],
+      "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+      "line": 19,
+      "column": 5,
+      "at": "examples/risky/android/app/src/main/AndroidManifest.xml:19",
+      "found": "android.permission.RECORD_AUDIO is requested: a dangerous permission (microphone) that the user grants at run time",
+      "fix": "keep the permission only if a feature needs it, and ask for it when the user starts that feature",
+      "basis": [
+        {
+          "text": "runtime permissions, also called dangerous permissions, reach restricted data or actions with more effect on the user, and the app must ask for them while it runs",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "special permissions guard powerful operations, such as drawing over other apps, and the user turns them on in the special app access page of the settings",
+          "source": "Permissions on Android (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/permissions/overview"
+        },
+        {
+          "text": "the reference gives the protection level of every system permission, and the ones of level dangerous are the runtime permissions",
+          "source": "Manifest.permission (Android API reference)",
+          "url": "https://developer.android.com/reference/android/Manifest.permission"
+        },
+        {
+          "text": "a uses-permission element names one permission, and maxSdkVersion sets the highest API level at which the app is given it",
+          "source": "<uses-permission> (Android Developers)",
+          "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element"
+        }
+      ],
+      "own": "one finding per permission name, at its first uses-permission or uses-permission-sdk-23 element; the dangerous ones are the system permissions of protection level dangerous, and the special ones a short list of powerful permissions (docs/method.md); a permission Google Play restricts is reported by restricted-permission instead"
+    },
+    {
+      "rule": "encryption-declaration",
+      "level": "info",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-CRYPTO-1"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 4,
+      "column": 1,
+      "at": "examples/risky/ios/Tidepool/Info.plist:4",
+      "found": "ITSAppUsesNonExemptEncryption is not set: App Store Connect asks the export compliance questions at every upload",
+      "fix": "add ITSAppUsesNonExemptEncryption with the answer that fits the app",
+      "basis": [
+        {
+          "text": "ITSAppUsesNonExemptEncryption says whether the app uses encryption that is not exempt; without the key, App Store Connect asks the export compliance questions at every upload",
+          "source": "ITSAppUsesNonExemptEncryption (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/itsappusesnonexemptencryption"
+        }
+      ],
+      "own": "ITSAppUsesNonExemptEncryption missing from the Info.plist; listed as info, a reminder about the export compliance answers, and MASVS-CRYPTO-1 is the closest control, not one the key proves"
+    },
+    {
+      "rule": "usage-description",
+      "level": "info",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 9,
+      "column": 2,
+      "at": "examples/risky/ios/Tidepool/Info.plist:9",
+      "found": "NSCameraUsageDescription (camera): \"Take a photo of the shore to add it to a tide entry.\"",
+      "fix": "check that each text says, in one specific sentence, why the app needs the resource",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        },
+        {
+          "text": "an Info.plist is a property list of keys and values that tells the system how to treat the bundle, and the file name is Info.plist",
+          "source": "Information Property List (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list"
+        }
+      ],
+      "own": "every key at the top of the Info.plist whose name ends in UsageDescription, with its text, so the list of protected resources the app asks for can be read in one place"
+    },
+    {
+      "rule": "usage-description",
+      "level": "info",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-PRIVACY-3"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 17,
+      "column": 2,
+      "at": "examples/risky/ios/Tidepool/Info.plist:17",
+      "found": "NSLocationAlwaysAndWhenInUseUsageDescription (location at all times): \"Tidepool logs the tide at your beach while the app is closed.\"",
+      "fix": "check that each text says, in one specific sentence, why the app needs the resource",
+      "basis": [
+        {
+          "text": "a protected resource needs a purpose string that is not blank, under 4,000 bytes, of the right type and specific about the reason; App Review rejects an app without one",
+          "source": "Requesting access to protected resources (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/uikit/requesting-access-to-protected-resources"
+        },
+        {
+          "text": "an Info.plist is a property list of keys and values that tells the system how to treat the bundle, and the file name is Info.plist",
+          "source": "Information Property List (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list"
+        }
+      ],
+      "own": "every key at the top of the Info.plist whose name ends in UsageDescription, with its text, so the list of protected resources the app asks for can be read in one place"
+    },
+    {
+      "rule": "file-sharing",
+      "level": "info",
+      "platform": "ios",
+      "masvs": [
+        "MASVS-STORAGE-2"
+      ],
+      "file": "examples/risky/ios/Tidepool/Info.plist",
+      "line": 53,
+      "column": 2,
+      "at": "examples/risky/ios/Tidepool/Info.plist:53",
+      "found": "UIFileSharingEnabled is true: the files of the Documents folder of the app are shared with the user",
+      "fix": "keep sensitive files out of the Documents folder, or turn the key off",
+      "basis": [
+        {
+          "text": "UIFileSharingEnabled set to YES shares the files of the Documents folder of the app with the user; the default is NO",
+          "source": "UIFileSharingEnabled (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/uifilesharingenabled"
+        },
+        {
+          "text": "LSSupportsOpeningDocumentsInPlace says whether the app may open the original document of a file provider instead of a copy",
+          "source": "LSSupportsOpeningDocumentsInPlace (Apple Developer Documentation)",
+          "url": "https://developer.apple.com/documentation/bundleresources/information-property-list/lssupportsopeningdocumentsinplace"
+        }
+      ],
+      "own": "listed as info so the files the app shows to the user are a known choice; UIFileSharingEnabled and LSSupportsOpeningDocumentsInPlace each give one finding when true"
+    }
+  ],
+  "summary": {
+    "manifests": [
+      {
+        "file": "examples/risky/android/app/src/main/AndroidManifest.xml",
+        "package": "example.tidepool",
+        "targetSdk": 27,
+        "permissions": [
+          "android.permission.INTERNET",
+          "android.permission.CAMERA",
+          "android.permission.ACCESS_FINE_LOCATION",
+          "android.permission.ACCESS_BACKGROUND_LOCATION",
+          "android.permission.READ_SMS",
+          "android.permission.READ_CONTACTS",
+          "android.permission.WRITE_EXTERNAL_STORAGE",
+          "android.permission.SYSTEM_ALERT_WINDOW",
+          "android.permission.QUERY_ALL_PACKAGES",
+          "android.permission.RECORD_AUDIO"
+        ],
+        "sensitive": 9,
+        "components": 9,
+        "exported": 6,
+        "backup": "on by default",
+        "cleartext": "app-wide",
+        "debuggable": "yes",
+        "resources": [
+          {
+            "use": "network",
+            "name": "network_security_config",
+            "file": "examples/risky/android/app/src/main/res/xml/network_security_config.xml",
+            "found": true
+          },
+          {
+            "use": "paths",
+            "name": "file_paths",
+            "file": "examples/risky/android/app/src/main/res/xml/file_paths.xml",
+            "found": true
+          },
+          {
+            "use": "paths",
+            "name": "photo_paths",
+            "file": "examples/risky/android/app/src/main/res/xml/photo_paths.xml",
+            "found": false
+          }
+        ]
+      }
+    ],
+    "plists": [
+      {
+        "file": "examples/risky/ios/Tidepool/Info.plist",
+        "bundleId": "$(PRODUCT_BUNDLE_IDENTIFIER)",
+        "usageDescriptions": [
+          "NSCameraUsageDescription",
+          "NSMicrophoneUsageDescription",
+          "NSContactsUsageDescription",
+          "NSPhotoLibraryUsageDescription",
+          "NSLocationAlwaysAndWhenInUseUsageDescription"
+        ],
+        "arbitraryLoads": true,
+        "exceptionDomains": 2,
+        "backgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
+    ],
+    "masvs": [
+      {
+        "group": "MASVS-STORAGE",
+        "title": "Storage",
+        "url": "https://mas.owasp.org/MASVS/05-MASVS-STORAGE/",
+        "findings": 5,
+        "controls": [
+          {
+            "id": "MASVS-STORAGE-2",
+            "text": "the app keeps sensitive data from leaking",
+            "findings": 5
+          }
+        ]
+      },
+      {
+        "group": "MASVS-CRYPTO",
+        "title": "Cryptography",
+        "url": "https://mas.owasp.org/MASVS/06-MASVS-CRYPTO/",
+        "findings": 1,
+        "controls": [
+          {
+            "id": "MASVS-CRYPTO-1",
+            "text": "the app uses current strong cryptography in the way the industry advises",
+            "findings": 1
+          }
+        ]
+      },
+      {
+        "group": "MASVS-NETWORK",
+        "title": "Network Communication",
+        "url": "https://mas.owasp.org/MASVS/08-MASVS-NETWORK/",
+        "findings": 9,
+        "controls": [
+          {
+            "id": "MASVS-NETWORK-1",
+            "text": "the app secures all of its network traffic with current good practice",
+            "findings": 9
+          }
+        ]
+      },
+      {
+        "group": "MASVS-PLATFORM",
+        "title": "Platform Interaction",
+        "url": "https://mas.owasp.org/MASVS/09-MASVS-PLATFORM/",
+        "findings": 8,
+        "controls": [
+          {
+            "id": "MASVS-PLATFORM-1",
+            "text": "the app uses the mechanisms of communication between processes safely",
+            "findings": 8
+          }
+        ]
+      },
+      {
+        "group": "MASVS-RESILIENCE",
+        "title": "Resilience Against Reverse Engineering and Tampering",
+        "url": "https://mas.owasp.org/MASVS/11-MASVS-RESILIENCE/",
+        "findings": 1,
+        "controls": [
+          {
+            "id": "MASVS-RESILIENCE-4",
+            "text": "the app makes analysis while it runs, such as debugging, harder",
+            "findings": 1
+          }
+        ]
+      },
+      {
+        "group": "MASVS-PRIVACY",
+        "title": "Privacy",
+        "url": "https://mas.owasp.org/MASVS/12-MASVS-PRIVACY/",
+        "findings": 16,
+        "controls": [
+          {
+            "id": "MASVS-PRIVACY-1",
+            "text": "the app reaches as little sensitive data and as few resources as it can",
+            "findings": 9
+          },
+          {
+            "id": "MASVS-PRIVACY-3",
+            "text": "the app is open about the data it collects and how it uses it",
+            "findings": 7
+          }
+        ]
+      }
+    ]
+  },
+  "totals": {
+    "findings": 37,
+    "byLevel": {
+      "error": 11,
+      "warning": 16,
+      "info": 10
+    },
+    "hidden": 0,
+    "notListed": 0
+  },
+  "result": {
+    "pass": false,
+    "failOn": "warning",
+    "failing": 27,
+    "byLevel": {
+      "error": 11,
+      "warning": 16,
+      "info": 10
+    },
+    "text": "FAIL - 27 findings at or above warning (11 error, 16 warning, 10 info)"
+  },
+  "notes": [],
+  "notice": "This check reads the manifests, the XML resources they name and the property lists it was given, as they are written. It does not read the merged manifest of a build, Gradle or Xcode build settings, manifest placeholders, resource values, localized strings or the code of the app, so a setting made there is not seen (docs/limits.md)."
+}

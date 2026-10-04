@@ -1,0 +1,56 @@
+{
+  "name": "built-in defaults",
+  "files": [
+    "**/AndroidManifest.xml",
+    "**/Info.plist",
+    "**/*-Info.plist"
+  ],
+  "exclude": [
+    "**/build/**",
+    "**/Pods/**",
+    "**/Carthage/**",
+    "**/DerivedData/**",
+    "**/*.xcarchive/**"
+  ],
+  "rules": {
+    "dangerousPermission": "info",
+    "restrictedPermission": "warning",
+    "debuggable": "error",
+    "allowBackup": "warning",
+    "cleartextTraffic": "error",
+    "cleartextDomain": "warning",
+    "userCertificates": "warning",
+    "exportedComponent": "warning",
+    "missingExported": "error",
+    "providerBroadPaths": "warning",
+    "missingResource": "warning",
+    "usageDescription": "info",
+    "emptyUsageDescription": "error",
+    "missingUsageDescription": "error",
+    "atsArbitraryLoads": "error",
+    "atsException": "warning",
+    "fileSharing": "info",
+    "encryptionDeclaration": "info"
+  },
+  "placeholders": [
+    "todo",
+    "tbd",
+    "fixme",
+    "placeholder",
+    "lorem ipsum",
+    "test",
+    "xxx",
+    "description",
+    "usage description",
+    "purpose string",
+    "add a description",
+    "description goes here",
+    "your description here",
+    "enter a description",
+    "n/a",
+    "none",
+    "string"
+  ],
+  "minSeverity": "info",
+  "failOn": "error"
+}

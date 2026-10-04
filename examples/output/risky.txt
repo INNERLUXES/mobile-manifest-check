@@ -1,0 +1,225 @@
+mobile-manifest-check: examples/risky
+input: examples/risky (5 files: 1 Android manifest, 2 XML resources, 2 Info.plist files)
+config: examples/config.json (Tidepool): 3 file patterns, 5 exclude patterns, 18 placeholders; minimum severity info; fail on warning
+rules: dangerous-permission (info); restricted-permission (warning); debuggable (error); allow-backup (warning); cleartext-traffic (error); cleartext-domain (warning); user-certificates (warning); exported-component (warning); missing-exported (error); provider-broad-paths (warning); missing-resource (warning); usage-description (info); empty-usage-description (error); missing-usage-description (error); ats-arbitrary-loads (error); ats-exception (warning); file-sharing (info); encryption-declaration (info); unreadable-file (error); unparsable-file (error)
+findings: 37 (11 error, 16 warning, 10 info)
+
+Findings (37)
+
+  ERROR    debuggable                 examples/risky/android/app/src/main/AndroidManifest.xml:25
+           android:debuggable="true" on <application>: the build can be debugged on any device, and app stores do not accept a debuggable app
+           fix: remove android:debuggable from the manifest; the build tools set it for debug builds only
+           masvs: MASVS-RESILIENCE-4
+
+  ERROR    cleartext-traffic          examples/risky/android/app/src/main/AndroidManifest.xml:26
+           android:usesCleartextTraffic="true": every connection of the app may use cleartext HTTP; on Android 7.0 and higher the network security config @xml/network_security_config decides instead
+           fix: set android:usesCleartextTraffic="false" and cleartextTrafficPermitted="false" in the base-config, and use HTTPS; allow cleartext only to a named domain that needs it
+           masvs: MASVS-NETWORK-1
+
+  ERROR    missing-exported           examples/risky/android/app/src/main/AndroidManifest.xml:45
+           <activity android:name=".DeepLinkActivity"> has an <intent-filter> and no android:exported: the app cannot be installed on Android 12 and higher, and on older systems the component is exported
+           fix: set android:exported explicitly: true only when other apps must start the component, false otherwise
+           masvs: MASVS-PLATFORM-1
+
+  ERROR    cleartext-traffic          examples/risky/android/app/src/main/res/xml/network_security_config.xml:3
+           <base-config cleartextTrafficPermitted="true">: cleartext traffic is permitted to every domain that no domain-config names
+           fix: set android:usesCleartextTraffic="false" and cleartextTrafficPermitted="false" in the base-config, and use HTTPS; allow cleartext only to a named domain that needs it
+           masvs: MASVS-NETWORK-1
+
+  ERROR    empty-usage-description    examples/risky/ios/Tidepool/Info.plist:11
+           NSMicrophoneUsageDescription (microphone) holds the placeholder "TODO": the system shows no useful reason when it asks the user, and App Review rejects an app whose purpose string is not valid
+           fix: write one specific sentence that tells the user why the app needs the resource
+           masvs: MASVS-PRIVACY-3
+
+  ERROR    empty-usage-description    examples/risky/ios/Tidepool/Info.plist:13
+           NSContactsUsageDescription (contacts) is empty: the system shows no useful reason when it asks the user, and App Review rejects an app whose purpose string is not valid
+           fix: write one specific sentence that tells the user why the app needs the resource
+           masvs: MASVS-PRIVACY-3
+
+  ERROR    empty-usage-description    examples/risky/ios/Tidepool/Info.plist:15
+           NSPhotoLibraryUsageDescription (photo library) holds the placeholder "Coming soon.": the system shows no useful reason when it asks the user, and App Review rejects an app whose purpose string is not valid
+           fix: write one specific sentence that tells the user why the app needs the resource
+           masvs: MASVS-PRIVACY-3
+
+  ERROR    missing-usage-description  examples/risky/ios/Tidepool/Info.plist:21
+           UIBackgroundModes holds location, but NSLocationWhenInUseUsageDescription (location while in use) is missing: the app cannot ask for that access, and an attempt to use it fails and may end the app
+           fix: add the usage description the capability needs, or remove the capability if the app does not use it
+           masvs: MASVS-PRIVACY-3
+
+  ERROR    missing-usage-description  examples/risky/ios/Tidepool/Info.plist:27
+           UIRequiredDeviceCapabilities requires bluetooth-le, but NSBluetoothAlwaysUsageDescription (Bluetooth) is missing: the app cannot ask for that access, and an attempt to use it fails and may end the app
+           fix: add the usage description the capability needs, or remove the capability if the app does not use it
+           masvs: MASVS-PRIVACY-3
+
+  ERROR    ats-arbitrary-loads        examples/risky/ios/Tidepool/Info.plist:31
+           NSAllowsArbitraryLoads is true: App Transport Security is off for every domain not named in NSExceptionDomains, so plain HTTP and weak TLS are allowed; iOS 10 and later ignore it because NSAllowsArbitraryLoadsInWebContent is also set, older systems do not
+           fix: remove NSAllowsArbitraryLoads and move the servers to HTTPS, or name the one domain that needs an exception in NSExceptionDomains
+           masvs: MASVS-NETWORK-1
+
+  ERROR    unparsable-file            examples/risky/ios/TidepoolWidget/Info.plist:2
+           line 2, column 1: a document type declaration with an internal subset, where entities are declared; the reader refuses it; nothing in the file is checked
+           fix: correct the file at the line and column named; write the text of a declared entity out in full instead
+
+  WARNING  restricted-permission      examples/risky/android/app/src/main/AndroidManifest.xml:11
+           android.permission.ACCESS_BACKGROUND_LOCATION is requested: Google Play reviews location in the background and asks for a declaration of the feature that needs it
+           fix: remove the permission, or prepare the declaration the store asks for; for package visibility, name the apps in a <queries> element instead
+           masvs: MASVS-PRIVACY-1
+
+  WARNING  restricted-permission      examples/risky/android/app/src/main/AndroidManifest.xml:12
+           android.permission.READ_SMS is requested: Google Play allows the SMS group only to a default SMS handler, or for an approved exception
+           fix: remove the permission, or prepare the declaration the store asks for; for package visibility, name the apps in a <queries> element instead
+           masvs: MASVS-PRIVACY-1
+
+  WARNING  restricted-permission      examples/risky/android/app/src/main/AndroidManifest.xml:18
+           android.permission.QUERY_ALL_PACKAGES is requested: Google Play allows the visibility of every installed app only for an approved use, declared in the Play Console
+           fix: remove the permission, or prepare the declaration the store asks for; for package visibility, name the apps in a <queries> element instead
+           masvs: MASVS-PRIVACY-1
+
+  WARNING  allow-backup               examples/risky/android/app/src/main/AndroidManifest.xml:23
+           android:allowBackup is not set, and it is true by default: the app data goes into cloud backups and device-to-device transfers; backup rules are named in android:fullBackupContent (@xml/backup_rules), which the tool does not read
+           fix: set android:allowBackup="false", or keep backups and leave every sensitive file out with android:dataExtractionRules and android:fullBackupContent
+           masvs: MASVS-STORAGE-2
+
+  WARNING  exported-component         examples/risky/android/app/src/main/AndroidManifest.xml:37
+           <activity android:name=".ShareTideActivity"> is exported with no permission: any app can start it
+           fix: set android:exported="false" unless other apps must reach the component; if they must, require a permission of protection level signature
+           masvs: MASVS-PLATFORM-1
+
+  WARNING  exported-component         examples/risky/android/app/src/main/AndroidManifest.xml:57
+           <service android:name=".SyncService"> is exported with the permission example.tidepool.permission.SYNC, which this manifest declares with protection level normal, so any app can hold it: any app can start or bind to it
+           fix: set android:exported="false" unless other apps must reach the component; if they must, require a permission of protection level signature
+           masvs: MASVS-PLATFORM-1
+
+  WARNING  missing-resource           examples/risky/android/app/src/main/AndroidManifest.xml:80
+           the android.support.FILE_PROVIDER_PATHS meta-data of .PhotoProvider names @xml/photo_paths, but res/xml/photo_paths.xml is not next to this manifest; its settings were not checked
+           fix: name the manifest of the source set that holds res/xml, or check the merged resource by hand
+           masvs: MASVS-NETWORK-1 and MASVS-PLATFORM-1
+
+  WARNING  exported-component         examples/risky/android/app/src/main/AndroidManifest.xml:88
+           <provider android:name=".TideLogProvider"> is exported with a permission for only one of reading and writing: any app can query or change its data
+           fix: set android:exported="false" unless other apps must reach the component; if they must, require a permission of protection level signature
+           masvs: MASVS-PLATFORM-1
+
+  WARNING  provider-broad-paths       examples/risky/android/app/src/main/AndroidManifest.xml:90
+           <grant-uri-permission android:pathPrefix="/"> of <provider android:name=".TideLogProvider"> covers every path of the provider
+           fix: share only the subdirectories that hold the files to share, never root-path, and name narrow grant-uri-permission paths
+           masvs: MASVS-PLATFORM-1 and MASVS-STORAGE-2
+
+  WARNING  user-certificates          examples/risky/android/app/src/main/res/xml/network_security_config.xml:6
+           <certificates src="user"/> in the base-config: certificate authorities the user installed are trusted for every domain, so a proxy with such a certificate can read the traffic
+           fix: trust the system certificate authorities only, and put certificates for testing under <debug-overrides>
+           masvs: MASVS-NETWORK-1
+
+  WARNING  cleartext-domain           examples/risky/android/app/src/main/res/xml/network_security_config.xml:9
+           <domain-config cleartextTrafficPermitted="true"> permits cleartext traffic to tiles.tidepool.test and its subdomains
+           fix: move the domains to HTTPS and remove the domain-config, or keep it to the one host that cannot move
+           masvs: MASVS-NETWORK-1
+
+  WARNING  provider-broad-paths       examples/risky/android/app/src/main/res/xml/file_paths.xml:4
+           <external-path name="everything" path="."> shares the whole external storage, not one subdirectory of it, through <provider android:name="androidx.core.content.FileProvider">
+           fix: share only the subdirectories that hold the files to share, never root-path, and name narrow grant-uri-permission paths
+           masvs: MASVS-PLATFORM-1 and MASVS-STORAGE-2
+
+  WARNING  provider-broad-paths       examples/risky/android/app/src/main/res/xml/file_paths.xml:5
+           <root-path name="root" path=""> shares the root of the device file system through <provider android:name="androidx.core.content.FileProvider">
+           fix: share only the subdirectories that hold the files to share, never root-path, and name narrow grant-uri-permission paths
+           masvs: MASVS-PLATFORM-1 and MASVS-STORAGE-2
+
+  WARNING  ats-exception              examples/risky/ios/Tidepool/Info.plist:33
+           NSAllowsArbitraryLoadsInWebContent is true: web views may load pages over plain HTTP
+           fix: move the domain to HTTPS with TLS 1.2 or higher and remove the exception
+           masvs: MASVS-NETWORK-1
+
+  WARNING  ats-exception              examples/risky/ios/Tidepool/Info.plist:41
+           NSExceptionAllowsInsecureHTTPLoads is true for legacy.tidepool.test and its subdomains: plain HTTP is allowed to it
+           fix: move the domain to HTTPS with TLS 1.2 or higher and remove the exception
+           masvs: MASVS-NETWORK-1
+
+  WARNING  ats-exception              examples/risky/ios/Tidepool/Info.plist:43
+           NSExceptionMinimumTLSVersion is TLSv1.0 for legacy.tidepool.test and its subdomains: TLS versions below 1.2 are allowed to it
+           fix: move the domain to HTTPS with TLS 1.2 or higher and remove the exception
+           masvs: MASVS-NETWORK-1
+
+  INFO     dangerous-permission       examples/risky/android/app/src/main/AndroidManifest.xml:9
+           android.permission.CAMERA is requested: a dangerous permission (camera) that the user grants at run time
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     dangerous-permission       examples/risky/android/app/src/main/AndroidManifest.xml:10
+           android.permission.ACCESS_FINE_LOCATION is requested: a dangerous permission (precise location) that the user grants at run time
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     dangerous-permission       examples/risky/android/app/src/main/AndroidManifest.xml:13
+           android.permission.READ_CONTACTS is requested: a dangerous permission (contacts) that the user grants at run time
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     dangerous-permission       examples/risky/android/app/src/main/AndroidManifest.xml:14
+           android.permission.WRITE_EXTERNAL_STORAGE is requested: a dangerous permission (shared storage) that the user grants at run time; requested up to API level 28 only
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     dangerous-permission       examples/risky/android/app/src/main/AndroidManifest.xml:17
+           android.permission.SYSTEM_ALERT_WINDOW is requested: a special permission (drawing over other apps)
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     dangerous-permission       examples/risky/android/app/src/main/AndroidManifest.xml:19
+           android.permission.RECORD_AUDIO is requested: a dangerous permission (microphone) that the user grants at run time
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     encryption-declaration     examples/risky/ios/Tidepool/Info.plist:4
+           ITSAppUsesNonExemptEncryption is not set: App Store Connect asks the export compliance questions at every upload
+           fix: add ITSAppUsesNonExemptEncryption with the answer that fits the app
+           masvs: MASVS-CRYPTO-1
+
+  INFO     usage-description          examples/risky/ios/Tidepool/Info.plist:9
+           NSCameraUsageDescription (camera): "Take a photo of the shore to add it to a tide entry."
+           fix: check that each text says, in one specific sentence, why the app needs the resource
+           masvs: MASVS-PRIVACY-3
+
+  INFO     usage-description          examples/risky/ios/Tidepool/Info.plist:17
+           NSLocationAlwaysAndWhenInUseUsageDescription (location at all times): "Tidepool logs the tide at your beach while the app is closed."
+           fix: check that each text says, in one specific sentence, why the app needs the resource
+           masvs: MASVS-PRIVACY-3
+
+  INFO     file-sharing               examples/risky/ios/Tidepool/Info.plist:53
+           UIFileSharingEnabled is true: the files of the Documents folder of the app are shared with the user
+           fix: keep sensitive files out of the Documents folder, or turn the key off
+           masvs: MASVS-STORAGE-2
+
+Android manifests
+
+  file                                                     package           target  permissions  sensitive  exported  backup         cleartext  debuggable
+  examples/risky/android/app/src/main/AndroidManifest.xml  example.tidepool  27      10           9          6 of 9    on by default  app-wide   yes
+
+  @xml/network_security_config (network security config) of examples/risky/android/app/src/main/AndroidManifest.xml: examples/risky/android/app/src/main/res/xml/network_security_config.xml
+  @xml/file_paths (FileProvider paths) of examples/risky/android/app/src/main/AndroidManifest.xml: examples/risky/android/app/src/main/res/xml/file_paths.xml
+  @xml/photo_paths (FileProvider paths) of examples/risky/android/app/src/main/AndroidManifest.xml: examples/risky/android/app/src/main/res/xml/photo_paths.xml not found
+
+iOS property lists
+
+  file                                    bundle id                     usage descriptions  arbitrary loads  exception domains  background modes
+  examples/risky/ios/Tidepool/Info.plist  $(PRODUCT_BUNDLE_IDENTIFIER)  5                   yes              2                  location, fetch
+
+OWASP MASVS groups of the findings
+
+  MASVS-STORAGE (Storage): 5 findings
+    MASVS-STORAGE-2, the app keeps sensitive data from leaking: 5
+  MASVS-CRYPTO (Cryptography): 1 finding
+    MASVS-CRYPTO-1, the app uses current strong cryptography in the way the industry advises: 1
+  MASVS-NETWORK (Network Communication): 9 findings
+    MASVS-NETWORK-1, the app secures all of its network traffic with current good practice: 9
+  MASVS-PLATFORM (Platform Interaction): 8 findings
+    MASVS-PLATFORM-1, the app uses the mechanisms of communication between processes safely: 8
+  MASVS-RESILIENCE (Resilience Against Reverse Engineering and Tampering): 1 finding
+    MASVS-RESILIENCE-4, the app makes analysis while it runs, such as debugging, harder: 1
+  MASVS-PRIVACY (Privacy): 16 findings
+    MASVS-PRIVACY-1, the app reaches as little sensitive data and as few resources as it can: 9
+    MASVS-PRIVACY-3, the app is open about the data it collects and how it uses it: 7
+
+This check reads the manifests, the XML resources they name and the property lists it was given, as they are written. It does not read the merged manifest of a build, Gradle or Xcode build settings, manifest placeholders, resource values, localized strings or the code of the app, so a setting made there is not seen (docs/limits.md).
+
+RESULT: FAIL - 27 findings at or above warning (11 error, 16 warning, 10 info)

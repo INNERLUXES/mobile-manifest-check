@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist [
+	<!ENTITY reason "Show the next tide at your beach on the home screen.">
+]>
+<plist version="1.0">
+<dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>&reason;</string>
+</dict>
+</plist>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A copy the build wrote; the default exclude patterns leave build output out, so this file is not read. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="example.tidepool">
+    <application android:debuggable="true" android:allowBackup="true" />
+</manifest>

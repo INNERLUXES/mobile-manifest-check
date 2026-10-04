@@ -1,0 +1,40 @@
+mobile-manifest-check: examples/clean
+input: examples/clean (4 files: 1 Android manifest, 2 XML resources, 1 Info.plist)
+config: built-in defaults: 3 file patterns, 5 exclude patterns, 17 placeholders; minimum severity info; fail on error
+rules: dangerous-permission (info); restricted-permission (warning); debuggable (error); allow-backup (warning); cleartext-traffic (error); cleartext-domain (warning); user-certificates (warning); exported-component (warning); missing-exported (error); provider-broad-paths (warning); missing-resource (warning); usage-description (info); empty-usage-description (error); missing-usage-description (error); ats-arbitrary-loads (error); ats-exception (warning); file-sharing (info); encryption-declaration (info); unreadable-file (error); unparsable-file (error)
+findings: 2 (2 info)
+
+Findings (2)
+
+  INFO     dangerous-permission       examples/clean/android/app/src/main/AndroidManifest.xml:7
+           android.permission.CAMERA is requested: a dangerous permission (camera) that the user grants at run time
+           fix: keep the permission only if a feature needs it, and ask for it when the user starts that feature
+           masvs: MASVS-PRIVACY-1
+
+  INFO     usage-description          examples/clean/ios/Driftwood/Info.plist:9
+           NSCameraUsageDescription (camera): "Scan a page from a paper notebook into a note."
+           fix: check that each text says, in one specific sentence, why the app needs the resource
+           masvs: MASVS-PRIVACY-3
+
+Android manifests
+
+  file                                                     package            target   permissions  sensitive  exported  backup  cleartext      debuggable
+  examples/clean/android/app/src/main/AndroidManifest.xml  example.driftwood  not set  2            1          1 of 3    off     not permitted  no
+
+  @xml/network_security_config (network security config) of examples/clean/android/app/src/main/AndroidManifest.xml: examples/clean/android/app/src/main/res/xml/network_security_config.xml
+  @xml/file_paths (FileProvider paths) of examples/clean/android/app/src/main/AndroidManifest.xml: examples/clean/android/app/src/main/res/xml/file_paths.xml
+
+iOS property lists
+
+  file                                     bundle id          usage descriptions  arbitrary loads  exception domains  background modes
+  examples/clean/ios/Driftwood/Info.plist  example.driftwood  1                   no               0                  none
+
+OWASP MASVS groups of the findings
+
+  MASVS-PRIVACY (Privacy): 2 findings
+    MASVS-PRIVACY-1, the app reaches as little sensitive data and as few resources as it can: 1
+    MASVS-PRIVACY-3, the app is open about the data it collects and how it uses it: 1
+
+This check reads the manifests, the XML resources they name and the property lists it was given, as they are written. It does not read the merged manifest of a build, Gradle or Xcode build settings, manifest placeholders, resource values, localized strings or the code of the app, so a setting made there is not seen (docs/limits.md).
+
+RESULT: PASS - no finding at or above error (2 info)
